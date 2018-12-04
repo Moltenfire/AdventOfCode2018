@@ -8,6 +8,7 @@ values = helper.load_in_list('input_4.txt', str)
 values.sort()
 
 guards = collections.defaultdict(int)
+guard2 = collections.defaultdict(list)
 curent_guard = None
 s = None
 for v in values:
@@ -18,10 +19,18 @@ for v in values:
     elif l == "f":
         s = x
     elif l == "w":
-        start = 60*s[3] + s[4]
-        end = 60*x[3] + x[4]
+        start = s[4]
+        end = x[4]
         time = end - start - 1
         guards[curent_guard] += time
+        guard2[curent_guard] += list(range(start, end))
 
-res = max(guards.items(), key=operator.itemgetter(1))[0]
-print(res)
+g_id = max(guards.items(), key=operator.itemgetter(1))[0]
+minute = collections.Counter(guard2[g_id]).most_common(1)[0][0]
+# print(g_id)
+# print(minute)
+# print(g_id * minute)
+
+for g in guard2:
+    minute = collections.Counter(guard2[g]).most_common(1)[0]
+    print(g, minute, g * minute[0])
