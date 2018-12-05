@@ -1,22 +1,17 @@
 import helper
 
 def collapse(l):
-    while True:
-        r = []
-        i = 0
-        while i < len(l) - 1:
-            x = l[i]
-            y = l[i+1]
+    stack = []
+    for y in l:
+        if not stack:
+            stack.append(y)
+        else:
+            x = stack[-1]
             if x - 32 == y or x + 32 == y:
-                r.append(i)
-                i += 1
-            i += 1
-
-        if len(r) == 0:
-            return len(l)
-        for i in reversed(r):
-            l.pop(i)
-            l.pop(i)
+                stack.pop()
+            else:
+                stack.append(y)
+    return len(stack)
 
 s = helper.load_in_list('input_5.txt', str)[0]
 # s = "dabAcCaCBAcCcaDA"
