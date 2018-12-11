@@ -16,7 +16,7 @@ def get_power(x, y, serial):
     return power
 
 def gen_fuel_grid(serial, length):
-    g = np.zeros((length, length))
+    g = np.zeros((length, length), dtype=int)
     for x in range(length):
         for y in range(length):
             power = get_power(x+1, y+1, serial)
@@ -42,16 +42,18 @@ def largest(serial):
 def largest_any_grid(serial):
     length = 300
     g = gen_fuel_grid(serial, length)
+    t = np.copy(g)
     max_val = 0
     max_x = 0
     max_y = 0
     max_grid = 0
-    for s in range(1, 300):
-        for x in range(length - s + 1):
-            for y in range(length - s + 1):
-                total = np.sum(g[x:x+s,y:y+s])
-                if total > max_val:
-                    max_val = total
+    for s in range(300):
+        for x in range(length - s):
+            for y in range(length - s):
+                if s > 0:
+                    t[x][y] += np.sum(g[x:x+s,y+s]) + np.sum(g[x+s,y:y+s+1])
+                if t[x][y] > max_val:
+                    max_val = t[x][y]
                     max_x = x
                     max_y = y
                     max_grid = s
@@ -65,7 +67,7 @@ def largest_any_grid(serial):
 # Part 1
 # print(largest(18))
 # print(largest(42))
-print(largest(2568))
+# print(largest(2568))
 
 # Part 2
 # print(largest_any_grid(18))
