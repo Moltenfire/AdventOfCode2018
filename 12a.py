@@ -6,39 +6,29 @@ import copy
 values = helper.load_in_list('input_12.txt', str)
 
 p = values[0].split()[2]
-m = { x : y for x , y in map(lambda x : x.split(' => '), values[2:])}
+pots = set(i for i, x in enumerate(p) if x == '#')
+recipes = set(x for x , y in map(lambda x : x.split(' => '), values[2:]) if y == '#')
 
-p = '.' * 5 + p + '.' * 2000
+def next_gen(pots, recipes):
+    new_pots = set()
+    for i in range(-5, max(pots) + 4):
+        s = ''.join('#' if j + i in pots else '.' for j in range(-2, 3))
+        if s in recipes:
+            new_pots.add(i)
+    return new_pots
 
-def plant_count(p):
-    t = 0
-    for i, x in enumerate(p):
-        if x == '#':
-            t += i - 5
-    return t
+def p1(pots, n=20):
+    for i in range(n):
+        pots = next_gen(pots, recipes)
+    print(sum(pots))
 
-def next_gen(p, m):
-    q = list(copy.copy(p))
-    for i in range(len(p) - 4):
-        s = p[i:i+5]
-        if s in m:
-            q[i+2] = m[s]
-        else:
-            q[i+2] = '.'
-    return ''.join(q)
-
-def p1(p):
-    for i in range(20):
-        p = next_gen(p, m)
-    print(plant_count(p))
-
-def p2(p):
-    prev = plant_count(p)
+def p2(pots):
+    prev = sum(pots)
     last_diff = 0
     n = 0
     for i in itertools.count():
-        p = next_gen(p, m)
-        c = plant_count(p)
+        pots = next_gen(pots, recipes)
+        c = sum(pots)
         diff = c - prev
         if diff == last_diff:
             if n > 5:
@@ -51,9 +41,5 @@ def p2(p):
             n = 0
         prev = c
 
-p1(p)
-p2(p)
-
-
-
-
+p1(pots)
+p2(pots)
