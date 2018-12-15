@@ -102,10 +102,10 @@ def get_nearest_position(positions):
     return nearest_positions[0]
 
 def get_move(grid, units, unit):
-    reachable = get_reachable(grid, units, unit.pos)
+    reachable_dist = get_reachable_dist(grid, units, unit.pos)
+    reachable = set(reachable_dist)
     all_targets = get_all_targets(grid, units, unit)
     possible_targets = reachable.intersection(all_targets)
-    reachable_dist = get_reachable_dist(grid, units, unit.pos)
     positions = {p: reachable_dist[p] for p in possible_targets}
     if positions:
         nearest_position = get_nearest_position(positions)
