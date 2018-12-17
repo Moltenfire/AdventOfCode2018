@@ -108,6 +108,9 @@ def tick(clay, max_y, still_water, moving_water, falling, spreading):
             if pr:
                 falling.add(pr)
 
+    if falling or spreading:
+        tick(clay, max_y, still_water, moving_water, falling, spreading)
+
 def main():
     clay = setup()
     max_y = max(clay, key=lambda x : x[1])[1]
@@ -117,10 +120,7 @@ def main():
     falling = set([spring])
     spreading = set()
 
-    while True:
-        tick(clay, max_y, still_water, moving_water, falling, spreading)
-        if not falling and not spreading:
-            break
+    tick(clay, max_y, still_water, moving_water, falling, spreading)
 
     total = len([p for p in moving_water.union(still_water) if p[1] < max_y])
     print(total)
