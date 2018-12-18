@@ -11,11 +11,9 @@ def print_grid(grid):
 
 def tick(g):
     g2 = g.copy()
-    max_x = g.shape[0]
-    max_y = g.shape[1]
 
-    for i in range(max_x):
-        for j in range(max_y):
+    for i in range(g.shape[0]):
+        for j in range(g.shape[1]):
             s = g[max(0, i-1):i+2, max(0, j-1):j+2]
             c = g[i,j]
             if c == '.':
@@ -34,40 +32,28 @@ def tick(g):
 
     return g2
 
-def score(grid):
-    flat = list(grid.flatten())
-    wooded = flat.count('|')
-    lumberyards = flat.count('#')
-    res = wooded * lumberyards
-    return res
-
+def get_score(grid):
+    return np.count_nonzero(grid == '|') * np.count_nonzero(grid == '#')
 
 grid = helper.load_grid('input_18.txt')
-
-seen_grids = {''.join(grid.flatten())}
+seen_grids = collections.defaultdict(int)
 scores = []
-last_i = 0
-start = None
 
 for i in range(1000000000):
     grid = tick(grid)
+    score = get_score(grid)
+    scores.append(score)
 
     if i == 9:
-        print(score(grid))
+        print(score)
 
     t = ''.join(grid.flatten())
-    if start is None:
-        if t in seen_grids:
-            start = t
-            last_i = i
-            scores.append(score(grid))
-        else:
-            seen_grids.add(t)
+    
+    if t in seen_grids:
+        prev_i = seen_grids[t]
+        r = i - prev_i
+        m = ((1000000000 - prev_i - 1) % r)
+        print(scores[m-r-1])
+        break
     else:
-        if t == start:
-            r = i - last_i
-            m = ((1000000000 - last_i - 1) % r)
-            print(scores[m])
-            break
-        else:
-            scores.append(score(grid))
+        seen_grids[t] = i
