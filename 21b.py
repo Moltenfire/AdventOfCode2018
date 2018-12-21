@@ -102,39 +102,59 @@ func = {
     "eqrr" : eqrr
 }
 
-def main(part1=True):
+def real(A=0):
+    B = 0
+    E = 0
+    C = 123
+    if (C & 456) == 72:
+        C = 0
+        F = 65536 | C
+        C =  16123384
+        D = F | 255
+        C += D
+        C = C & 16777215 # 10
+        C *= 65899
+        C = C & 16777215 # 12
+        if 256 > F:
+            pass # goto 27
+        D = 0
+        B = D + 1 # 18
+        B *= 256 # 19
+        if B > F
+            
+
+
+
+    E += C
+
+def main(n=0):
     values = list(map(lambda x : (x.split()[0], list(map(int, x.split()[1:]))), helper.load_in_list('input_21.txt', str)))
-    ip = 0
+    # ip = 0
     ip_reg = values[0][1][0]
     program = values[1:]
 
-    reg = [0,0,0,0,0,0]
+    reg = [n,0,0,0,0,0]
+    t = 0
+    while reg[ip_reg] < len(program):
+        ip = reg[ip_reg]
+        reg_before = reg[::]
 
-    last = 0
-    seen = set()
-    while ip < len(program):
-
-        if ip == 28:
-            c = reg[2]
-            if part1:
-                print(c)
-                break
-            else:
-                if c in seen:
-                    print("Seen {} before. Last was {}".format(c, last))
-                    break
-                seen.add(c)
-                last = c
-
-        reg[ip_reg] = ip
-
-        line = program[ip]
+        line = program[reg[ip_reg]]
         func_name = func[line[0]]
         v = line[1]
         reg = func_name(reg, v[0], v[1], v[2])
-        ip = reg[ip_reg]
-        ip += 1
+
+        reg[ip_reg] += 1
+    
+        print(ip, line, reg_before, reg)
+        t += 1
+        if t > 30:
+            break
+
+    print(reg)
 
 if __name__ == '__main__':
-    main()
-    # main(part1=False) # Warning this took 24mins
+    main(0)
+    # main(1)
+
+
