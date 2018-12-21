@@ -3,85 +3,53 @@ import itertools
 import helper
 import re
 
-def addr(registers, a, b, c):
-    res = registers[::]
-    res[c] = res[a] + res[b]
-    return res
+def addr(r, a, b, c):
+    r[c] = r[a] + r[b]
 
-def addi(registers, a, b, c):
-    res = registers[::]
-    res[c] = res[a] + b
-    return res
+def addi(r, a, b, c):
+    r[c] = r[a] + b
 
-def mulr(registers, a, b, c):
-    res = registers[::]
-    res[c] = res[a] * res[b]
-    return res
+def mulr(r, a, b, c):
+    r[c] = r[a] * r[b]
 
-def muli(registers, a, b, c):
-    res = registers[::]
-    res[c] = res[a] * b
-    return res
+def muli(r, a, b, c):
+    r[c] = r[a] * b
 
-def banr(registers, a, b, c):
-    res = registers[::]
-    res[c] = res[a] & res[b]
-    return res
+def banr(r, a, b, c):
+    r[c] = r[a] & r[b]
 
-def bani(registers, a, b, c):
-    res = registers[::]
-    res[c] = res[a] & b
-    return res
+def bani(r, a, b, c):
+    r[c] = r[a] & b
 
-def borr(registers, a, b, c):
-    res = registers[::]
-    res[c] = res[a] | res[b]
-    return res
+def borr(r, a, b, c):
+    r[c] = r[a] | r[b]
 
-def bori(registers, a, b, c):
-    res = registers[::]
-    res[c] = res[a] | b
-    return res
+def bori(r, a, b, c):
+    r[c] = r[a] | b
 
-def setr(registers, a, b, c):
-    res = registers[::]
-    res[c] = res[a]
-    return res
+def setr(r, a, b, c):
+    r[c] = r[a]
 
-def seti(registers, a, b, c):
-    res = registers[::]
-    res[c] = a
-    return res
+def seti(r, a, b, c):
+    r[c] = a
 
-def gtir(registers, a, b, c):
-    res = registers[::]
-    res[c] = 1 if a > res[b] else 0
-    return res
+def gtir(r, a, b, c):
+    r[c] = int(a > r[b])
 
-def gtri(registers, a, b, c):
-    res = registers[::]
-    res[c] = 1 if res[a] > b else 0
-    return res
+def gtri(r, a, b, c):
+    r[c] = int(r[a] > b)
 
-def gtrr(registers, a, b, c):
-    res = registers[::]
-    res[c] = 1 if res[a] > res[b] else 0
-    return res
+def gtrr(r, a, b, c):
+    r[c] = int(r[a] > r[b])
 
-def eqir(registers, a, b, c):
-    res = registers[::]
-    res[c] = 1 if a == res[b] else 0
-    return res
+def eqir(r, a, b, c):
+    r[c] = int(a == r[b])
 
-def eqri(registers, a, b, c):
-    res = registers[::]
-    res[c] = 1 if res[a] == b else 0
-    return res
+def eqri(r, a, b, c):
+    r[c] = int(r[a] == b)
 
-def eqrr(registers, a, b, c):
-    res = registers[::]
-    res[c] = 1 if res[a] == res[b] else 0
-    return res
+def eqrr(r, a, b, c):
+    r[c] = int(r[a] == r[b])
 
 func = {
     "addr" : addr,
@@ -131,10 +99,10 @@ def main(part1=True):
         line = program[ip]
         func_name = func[line[0]]
         v = line[1]
-        reg = func_name(reg, v[0], v[1], v[2])
+        func_name(reg, v[0], v[1], v[2])
         ip = reg[ip_reg]
         ip += 1
 
 if __name__ == '__main__':
     main()
-    # main(part1=False) # Warning this took 24mins
+    main(part1=False) # Warning this took 24mins
