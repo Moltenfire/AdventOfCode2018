@@ -1,7 +1,7 @@
 import collections
 import helper
 import numpy as np
-import operator
+import networkx as nx
 
 def get_type(x):
     if x == 0:
@@ -54,7 +54,7 @@ valid = { rock : { climb, torch }, wet : { climb, neither }, narrow : {torch, ne
 def shortest(region_type, target_x, target_y):
     max_x = region_type.shape[0]
     max_y = region_type.shape[1]
-    E = collections.defaultdict(set)
+    graph = nx.Graph()
 
     for x in range(max_x):
         for y in range(max_y):
@@ -62,8 +62,7 @@ def shortest(region_type, target_x, target_y):
             i1, i2 = list(valid[xy_type])
             p1 = (x,y,i1)
             p2 = (x,y,i2)
-            E[p1].add((p2,7))
-            E[p2].add((p1,7))
+            graph.add_edge(p1, p2, weight=7)
 
             next_points = get_adjacent(x,y,max_x,max_y)
             for new_x, new_y in next_points:
@@ -72,34 +71,9 @@ def shortest(region_type, target_x, target_y):
                 for i in possible_items:
                     p1 = (x,y,i)
                     p2 = (new_x,new_y,i)
-                    E[p1].add((p2,1))
-                    E[p2].add((p1,1))
-                    
-    start = (0, 0, torch)
-    end = (target_x, target_y, torch)
-    queue = {start}
-    complete = set()
-    distances = { n : float('inf') for n in E }
-    distances[start] = 0
-    while queue:
-        node = min(queue, key=lambda n : distances[n])
-        queue.remove(node)
-        complete.add(node)
-        time = distances[node]
+                    graph.add_edge(p1, p2, weight=1)
 
-        if node == end:
-            return time
-
-        adjacent = E[node]
-
-        for n, cost in adjacent:
-            if n in complete:
-                continue
-            queue.add(n)
-            new_time = cost + time
-
-            if new_time < distances[n]:
-                distances[n] = new_time
+    return nx.dijkstra_path_length(graph, (0, 0, torch), (target_x, target_y, torch))
 
 def main(depth, target_x, target_y):
 
