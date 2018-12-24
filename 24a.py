@@ -103,12 +103,17 @@ def battle(g, bonus=0):
 
         tt = list(targets.keys())
         tt.sort(key=lambda x : x.initiative, reverse=True)
+        total_kills = 0
         for t in tt:
             d = targets[t]
             dmg = potential_dmg(t, d)
             kills = int( min(dmg, d.hp * d.total) / d.hp)
             d.total -= kills
+            total_kills += kills
             # print("{} attacks {} dmg {} kills {}".format(t, d, dmg, kills))
+
+        if total_kills == 0:
+            return 0, False
 
         groups = [g for g in groups if g.total > 0]
     
@@ -119,13 +124,11 @@ def main():
     total, won = battle(groups)
     print(total)
 
-    for i in itertools.count(39):
+    for i in itertools.count(30):
         total, won = battle(groups, i)
         if won:
-            print(i, total)
+            print(total)
             break
-
-
 
 if __name__ == '__main__':
     main()
